@@ -2,7 +2,6 @@
  * @module ol/render/canvas/Executor
  */
 import CanvasInstruction from './Instruction.js';
-import DeclutterMode from '../../style/DeclutterMode.js';
 import {TEXT_ALIGN} from './TextBuilder.js';
 import {WORKER_OFFSCREEN_CANVAS} from '../../has.js';
 import {
@@ -905,12 +904,13 @@ class Executor {
                 : null,
             ];
             if (opt_declutterTree) {
-              if (declutterMode === DeclutterMode.NONE) {
+              if (declutterMode === 'none') {
                 // not rendered in declutter group
                 continue;
-              } else if (declutterMode === DeclutterMode.OBSTACLE) {
+              } else if (declutterMode === 'obstacle') {
                 // will always be drawn, thus no collision detection, but insert as obstacle
                 opt_declutterTree.insert(dimensions.declutterBox);
+                continue;
               } else {
                 let imageArgs;
                 let imageDeclutterBox;

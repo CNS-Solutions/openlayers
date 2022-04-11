@@ -2,7 +2,6 @@
  * @module ol/renderer/vector
  */
 import BuilderType from '../render/canvas/BuilderType.js';
-import DeclutterMode from '../style/DeclutterMode.js';
 import GeometryType from '../geom/GeometryType.js';
 import ImageState from '../ImageState.js';
 import {getUid} from '../util.js';
@@ -370,9 +369,9 @@ function renderPointGeometry(
     let imageBuilderGroup = builderGroup;
     if (opt_declutterBuilderGroup) {
       const declutterMode = imageStyle.getDeclutterMode();
-      if (declutterMode !== DeclutterMode.NONE) {
+      if (declutterMode !== 'none') {
         imageBuilderGroup = opt_declutterBuilderGroup;
-        if (declutterMode === DeclutterMode.OBSTACLE) {
+        if (declutterMode === 'obstacle') {
           // draw in non-declutter group:
           const imageReplay = builderGroup.getBuilder(
             style.getZIndex(),
@@ -431,9 +430,9 @@ function renderMultiPointGeometry(
     let imageBuilderGroup = builderGroup;
     if (opt_declutterBuilderGroup) {
       const declutterMode = imageStyle.getDeclutterMode();
-      if (declutterMode !== DeclutterMode.NONE) {
+      if (declutterMode !== 'none') {
         imageBuilderGroup = opt_declutterBuilderGroup;
-        if (declutterMode === DeclutterMode.OBSTACLE) {
+        if (declutterMode === 'obstacle') {
           // draw in non-declutter group:
           const imageReplay = builderGroup.getBuilder(
             style.getZIndex(),
