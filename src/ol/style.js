@@ -3,6 +3,7 @@
  */
 
 export {default as Circle} from './style/Circle.js';
+export {default as DeclutterMode} from './style/DeclutterMode.js';
 export {default as Fill} from './style/Fill.js';
 export {default as Icon} from './style/Icon.js';
 export {default as IconImage} from './style/IconImage.js';
