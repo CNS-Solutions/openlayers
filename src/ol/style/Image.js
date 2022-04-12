@@ -64,7 +64,7 @@ class ImageStyle {
 
     /**
      * @private
-     * @type {import("./DeclutterMode.js")}
+     * @type {import("./DeclutterMode.js").default}
      */
     this.declutterMode_ = options.declutterMode;
   }
@@ -141,7 +141,7 @@ class ImageStyle {
 
   /**
    * Get the declutter mode of the shape
-   * @return {import("./DeclutterMode.js")} Shape's declutter mode
+   * @return {import("./DeclutterMode.js").default} Shape's declutter mode
    * @api
    */
   getDeclutterMode() {
