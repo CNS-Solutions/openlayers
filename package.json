@@ -7,7 +7,6 @@
     "mapping",
     "openlayers"
   ],
-  "private": true,
   "homepage": "https://openlayers.org/",
   "scripts": {
     "lint": "eslint tasks test src/ol examples config",
@@ -19,6 +18,8 @@
     "karma": "karma start test/browser/karma.config.cjs",
     "start": "npm run serve-examples",
     "serve-examples": "webpack serve --config examples/webpack/config.mjs --mode development",
+    "prepack": "npm run build-package && shx rm ./build/ol/package.json && shx cp -r ./build/ol/* .",
+    "postpack": "git clean -fd",
     "build-examples": "webpack --config examples/webpack/config.mjs --mode production",
     "build-package": "npm run transpile && npm run copy-css && npm run generate-types && node tasks/prepare-package.js",
     "build-index": "shx rm -f build/index.js && npm run build-package && node tasks/generate-index.js",
