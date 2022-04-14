@@ -2,6 +2,7 @@
  * @module ol/renderer/vector
  */
 import BuilderType from '../render/canvas/BuilderType.js';
+import DeclutterMode from '../style/DeclutterMode.js';
 import GeometryType from '../geom/GeometryType.js';
 import ImageState from '../ImageState.js';
 import {getUid} from '../util.js';
@@ -362,16 +363,25 @@ function renderPointGeometry(
   const textStyle = style.getText();
   /** @type {import("../render/canvas.js").DeclutterImageWithText} */
   let declutterImageWithText;
-  if (opt_declutterBuilderGroup) {
-    builderGroup = opt_declutterBuilderGroup;
-    declutterImageWithText =
-      imageStyle && textStyle && textStyle.getText() ? {} : undefined;
-  }
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
       return;
     }
-    const imageReplay = builderGroup.getBuilder(
+    let imageBuilderGroup = builderGroup;
+    if (opt_declutterBuilderGroup) {
+      const declutterMode = imageStyle.getDeclutterMode();
+      if (declutterMode !== DeclutterMode.NONE) {
+        imageBuilderGroup = opt_declutterBuilderGroup;
+        if (
+          declutterMode !== DeclutterMode.OBSTACLE &&
+          textStyle &&
+          textStyle.getText()
+        ) {
+          declutterImageWithText = {};
+        }
+      }
+    }
+    const imageReplay = imageBuilderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.IMAGE
     );
@@ -379,7 +389,11 @@ function renderPointGeometry(
     imageReplay.drawPoint(geometry, feature);
   }
   if (textStyle && textStyle.getText()) {
-    const textReplay = builderGroup.getBuilder(
+    let textBuilderGroup = builderGroup;
+    if (opt_declutterBuilderGroup) {
+      textBuilderGroup = opt_declutterBuilderGroup;
+    }
+    const textReplay = textBuilderGroup.getBuilder(
       style.getZIndex(),
       BuilderType.TEXT
     );

@@ -23,6 +23,7 @@ import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {equals} from '../../array.js';
 import {lineStringLength} from '../../geom/flat/length.js';
 import {transform2D} from '../../geom/flat/transform.js';
+import DeclutterMode from '../../style/DeclutterMode.js';
 
 /**
  * @typedef {Object} BBox
@@ -903,38 +904,42 @@ class Executor {
                 ? /** @type {Array<*>} */ (lastStrokeInstruction)
                 : null,
             ];
-            if (opt_declutterTree && declutterMode !== 'none') {
-              let imageArgs;
-              let imageDeclutterBox;
-              const declutter = !declutterMode || declutterMode === 'declutter';
-              if (declutter && declutterImageWithText) {
-                const index = dd - d;
-                if (!declutterImageWithText[index]) {
-                  // We now have the image for an image+text combination.
-                  declutterImageWithText[index] = args;
-                  // Don't render anything for now, wait for the text.
-                  continue;
-                }
-                imageArgs = declutterImageWithText[index];
-                delete declutterImageWithText[index];
-                imageDeclutterBox = getDeclutterBox(imageArgs);
-                if (opt_declutterTree.collides(imageDeclutterBox)) {
-                  continue;
-                }
-              }
-              if (
-                declutter &&
-                opt_declutterTree.collides(dimensions.declutterBox)
-              ) {
+            if (opt_declutterTree) {
+              if (declutterMode === DeclutterMode.NONE) {
+                // not rendered in declutter group
                 continue;
+              } else if (declutterMode === DeclutterMode.OBSTACLE) {
+                // will always be drawn, thus no collision detection, but insert as obstacle
+                opt_declutterTree.insert(dimensions.declutterBox);
+              } else {
+                let imageArgs;
+                let imageDeclutterBox;
+                if (declutterImageWithText) {
+                  const index = dd - d;
+                  if (!declutterImageWithText[index]) {
+                    // We now have the image for an image+text combination.
+                    declutterImageWithText[index] = args;
+                    // Don't render anything for now, wait for the text.
+                    continue;
+                  }
+                  imageArgs = declutterImageWithText[index];
+                  delete declutterImageWithText[index];
+                  imageDeclutterBox = getDeclutterBox(imageArgs);
+                  if (opt_declutterTree.collides(imageDeclutterBox)) {
+                    continue;
+                  }
+                }
+                if (opt_declutterTree.collides(dimensions.declutterBox)) {
+                  continue;
+                }
+                if (imageArgs) {
+                  // We now have image and text for an image+text combination.
+                  opt_declutterTree.insert(imageDeclutterBox);
+                  // Render the image before we render the text.
+                  this.replayImageOrLabel_.apply(this, imageArgs);
+                }
+                opt_declutterTree.insert(dimensions.declutterBox);
               }
-              if (imageArgs) {
-                // We now have image and text for an image+text combination.
-                opt_declutterTree.insert(imageDeclutterBox);
-                // Render the image before we render the text.
-                this.replayImageOrLabel_.apply(this, imageArgs);
-              }
-              opt_declutterTree.insert(dimensions.declutterBox);
             }
             this.replayImageOrLabel_.apply(this, args);
           }
