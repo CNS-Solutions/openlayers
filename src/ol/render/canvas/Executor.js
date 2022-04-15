@@ -2,6 +2,7 @@
  * @module ol/render/canvas/Executor
  */
 import CanvasInstruction from './Instruction.js';
+import DeclutterMode from '../../style/DeclutterMode.js';
 import {TEXT_ALIGN} from './TextBuilder.js';
 import {WORKER_OFFSCREEN_CANVAS} from '../../has.js';
 import {
@@ -23,7 +24,6 @@ import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {equals} from '../../array.js';
 import {lineStringLength} from '../../geom/flat/length.js';
 import {transform2D} from '../../geom/flat/transform.js';
-import DeclutterMode from '../../style/DeclutterMode.js';
 
 /**
  * @typedef {Object} BBox
