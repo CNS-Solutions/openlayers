@@ -688,7 +688,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       let contextSaved = false;
       // Clip mask for regions in this tile that already filled by a higher z tile
       const currentClip = executorGroups[0].getClipCoords(transform);
-      if (currentClip != null) {
+      if (currentClip) {
         for (let j = 0, jj = clips.length; j < jj; ++j) {
           if (z !== currentZ && currentZ < clipZs[j]) {
             const clip = clips[j];
