@@ -694,7 +694,12 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
             const clip = clips[j];
             if (
               intersects(
-                [currentClip[0], currentClip[3], currentClip[4], currentClip[7]],
+                [
+                  currentClip[0],
+                  currentClip[3],
+                  currentClip[4],
+                  currentClip[7],
+                ],
                 [clip[0], clip[3], clip[4], clip[7]]
               )
             ) {
