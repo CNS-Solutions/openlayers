@@ -200,6 +200,12 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
+     * @type {import("../../style/Text.js").TextFunction|undefined}
+     */
+    this.textFunction_ = undefined;
+
+    /**
+     * @private
      * @type {string}
      */
     this.text_ = '';
@@ -613,6 +619,15 @@ class CanvasImmediateRenderer extends VectorContext {
       return;
     }
     this.setStyle(style);
+    if (this.textFunction_) {
+      const textText = this.textFunction_(feature);
+      this.text_ =
+        textText !== undefined
+          ? Array.isArray(textText)
+            ? textText.reduce((acc, t, i) => (acc += i % 2 ? ' ' : t), '')
+            : textText
+          : '';
+    }
     this.drawGeometry(geometry);
   }
 
@@ -1075,6 +1090,7 @@ class CanvasImmediateRenderer extends VectorContext {
    */
   setTextStyle(textStyle) {
     if (!textStyle) {
+      this.textFunction_ = undefined;
       this.text_ = '';
     } else {
       const textFillStyle = textStyle.getFill();
@@ -1134,7 +1150,7 @@ class CanvasImmediateRenderer extends VectorContext {
       const textRotateWithView = textStyle.getRotateWithView();
       const textRotation = textStyle.getRotation();
       const textScale = textStyle.getScaleArray();
-      const textText = textStyle.getText();
+      const textTextFunction = textStyle.getTextFunction();
       const textTextAlign = textStyle.getTextAlign();
       const textTextBaseline = textStyle.getTextBaseline();
       this.textState_ = {
@@ -1146,12 +1162,8 @@ class CanvasImmediateRenderer extends VectorContext {
             ? textTextBaseline
             : defaultTextBaseline,
       };
-      this.text_ =
-        textText !== undefined
-          ? Array.isArray(textText)
-            ? textText.reduce((acc, t, i) => (acc += i % 2 ? ' ' : t), '')
-            : textText
-          : '';
+      this.textFunction_ = textTextFunction;
+      this.text_ = '';
       this.textOffsetX_ =
         textOffsetX !== undefined ? this.pixelRatio_ * textOffsetX : 0;
       this.textOffsetY_ =
